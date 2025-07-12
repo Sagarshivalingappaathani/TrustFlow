@@ -1,1 +1,4 @@
 myenv/
+.env
+ngrok-stable-linux-amd64.zip
+_pycache_/
