@@ -65,6 +65,7 @@ async def analyze_company_api(request: CompanyAnalysisRequest):
     Returns comprehensive company analysis report.
     """
     try:
+        print(request)
         if not request.company_name or not request.company_name.strip():
             raise HTTPException(status_code=400, detail="Company name is required")
         
