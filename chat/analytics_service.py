@@ -1,0 +1,438 @@
+from typing import Dict, List, Optional, Any
+from datetime import datetime, timedelta
+import json
+from web3_service import web3_service
+import logging
+
+logger = logging.getLogger(__name__)
+
+class AnalyticsService:
+    def __init__(self):
+        self.web3_service = web3_service
+
+    def format_currency(self, amount: float) -> str:
+        """Format currency with ETH symbol"""
+        return f"{amount:.4f} ETH"
+
+    def format_percentage(self, value: float) -> str:
+        """Format percentage"""
+        return f"{value:.2f}%"
+
+    def get_user_analytics_summary(self, address: str) -> str:
+        """Get formatted analytics summary for AI context"""
+        try:
+            data = self.web3_service.get_comprehensive_user_data(address)
+            
+            if not data:
+                return "No data found for this user address."
+            
+            company = data.get("company", {})
+            analytics = data.get("analytics", {})
+            products = data.get("products", [])
+            transactions = data.get("transactions", [])
+            relationships = data.get("relationships", [])
+            orders = data.get("orders", [])
+            
+            # Company information
+            company_info = f"Company: {company.get('name', 'Unregistered')}" if company else "Company: Unregistered"
+            
+            # Financial metrics
+            revenue = analytics.get("totalRevenue", 0)
+            spending = analytics.get("totalSpending", 0)
+            inventory_value = analytics.get("totalInventoryValue", 0)
+            profit = revenue - spending
+            
+            # Product analysis
+            product_summary = self._analyze_products(products)
+            
+            # Transaction analysis
+            transaction_summary = self._analyze_transactions(transactions)
+            
+            # Relationship analysis
+            relationship_summary = self._analyze_relationships(relationships)
+            
+            # Order analysis
+            order_summary = self._analyze_orders(orders)
+            
+            summary = f"""
+USER ANALYTICS SUMMARY:
+{company_info}
+Address: {address}
+
+FINANCIAL OVERVIEW:
+• Total Revenue: {self.format_currency(revenue)}
+• Total Spending: {self.format_currency(spending)}
+• Net Profit: {self.format_currency(profit)}
+• Inventory Value: {self.format_currency(inventory_value)}
+
+PRODUCT PORTFOLIO:
+{product_summary}
+
+TRANSACTION HISTORY:
+{transaction_summary}
+
+BUSINESS RELATIONSHIPS:
+{relationship_summary}
+
+ORDER MANAGEMENT:
+{order_summary}
+            """
+            
+            return summary.strip()
+            
+        except Exception as e:
+            logger.error(f"Error generating user analytics summary: {e}")
+            return "Error retrieving user analytics data."
+
+    def _analyze_products(self, products: List[Dict]) -> str:
+        """Analyze user's product portfolio"""
+        if not products:
+            return "• No products owned"
+        
+        total_products = len(products)
+        total_quantity = sum(p["quantity"] for p in products)
+        total_value = sum(p["pricePerUnit"] * p["quantity"] for p in products)
+        
+        # Top products by value
+        top_products = sorted(products, key=lambda p: p["pricePerUnit"] * p["quantity"], reverse=True)[:3]
+        
+        analysis = f"• Total Products: {total_products}\n"
+        analysis += f"• Total Quantity: {total_quantity} units\n"
+        analysis += f"• Total Value: {self.format_currency(total_value)}\n"
+        
+        # Format products as a table for better display
+        analysis += "\n| Product Name | Quantity | Unit Price | Total Value |\n"
+        analysis += "|--------------|----------|------------|-------------|\n"
+        for product in top_products:
+            value = product["pricePerUnit"] * product["quantity"]
+            analysis += f"| {product['name']} | {product['quantity']} units | {product['pricePerUnit']:.4f} ETH | {value:.4f} ETH |\n"
+        
+        return analysis
+
+    def _analyze_transactions(self, transactions: List[Dict]) -> str:
+        """Analyze user's transaction history"""
+        if not transactions:
+            return "• No transactions found"
+        
+        total_transactions = len(transactions)
+        sales_transactions = [tx for tx in transactions if tx["buyer"] != tx["seller"]]
+        purchase_transactions = [tx for tx in transactions if tx["buyer"] == tx["seller"]]
+        
+        spot_transactions = [tx for tx in transactions if tx["transactionType"] == "spot"]
+        relationship_transactions = [tx for tx in transactions if tx["transactionType"] == "relationship"]
+        
+        recent_transactions = sorted(transactions, key=lambda tx: tx["timestamp"], reverse=True)[:5]
+        
+        analysis = f"• Total Transactions: {total_transactions}\n"
+        analysis += f"• Spot Market Transactions: {len(spot_transactions)}\n"
+        analysis += f"• Relationship-based Transactions: {len(relationship_transactions)}\n"
+        
+        # Create a transaction table showing actual blockchain data
+        analysis += "\n| Transaction ID | Type | Product ID | Quantity | Unit Price | Total Value | Date |\n"
+        analysis += "|----------------|------|------------|----------|------------|-------------|------|\n"
+        
+        for tx in recent_transactions:
+            date = datetime.fromtimestamp(tx["timestamp"]).strftime("%Y-%m-%d")
+            tx_type = tx["transactionType"].title()
+            
+            # Show actual blockchain data
+            product_id = tx.get("productId", "N/A")
+            quantity = f"{tx.get('quantity', 0)} units" if tx.get('quantity', 0) > 0 else "N/A"
+            
+            # Calculate unit price from actual data
+            if tx.get('quantity', 0) > 0:
+                unit_price = f"{(tx['totalPrice'] / tx['quantity']):.4f} ETH"
+            else:
+                unit_price = "N/A"
+            
+            analysis += f"| {tx['id']} | {tx_type} | {product_id} | {quantity} | {unit_price} | {tx['totalPrice']:.4f} ETH | {date} |\n"
+        
+        return analysis
+
+    def _analyze_relationships(self, relationships: List[Dict]) -> str:
+        """Analyze user's business relationships"""
+        if not relationships:
+            return "• No active relationships"
+        
+        total_relationships = len(relationships)
+        
+        # Analyze by role using the 'role' field
+        as_supplier = [r for r in relationships if r.get('role') == 'supplier']
+        as_buyer = [r for r in relationships if r.get('role') == 'buyer']
+        
+        analysis = f"• Total Active Relationships: {total_relationships}\n"
+        analysis += f"• As Supplier: {len(as_supplier)}\n"
+        analysis += f"• As Buyer: {len(as_buyer)}\n\n"
+        
+        # Create a table format for relationships to trigger the AI table formatter
+        if relationships:
+            analysis += "Your active relationships:\n"
+            analysis += "| Role | Partner Company | Product | Price (ETH) | Status |\n"
+            analysis += "|------|----------------|---------|-------------|--------|\n"
+            
+            for r in relationships:
+                role = r.get('role', 'unknown').title()
+                if role == 'Buyer':
+                    partner = r.get('supplierName', 'Unknown')
+                else:
+                    partner = r.get('buyerName', 'Unknown')
+                
+                product = r.get('productName', 'Unknown Product')
+                price = r.get('currentPrice', 0)
+                status = r.get('status', 'unknown').title()
+                
+                analysis += f"| {role} | {partner} | {product} | {price:.2f} | {status} |\n"
+        
+        return analysis
+
+    def _analyze_orders(self, orders: List[Dict]) -> str:
+        """Analyze user's order management"""
+        if not orders:
+            return "• No orders found"
+        
+        total_orders = len(orders)
+        pending_orders = [o for o in orders if o["status"] == "pending"]
+        completed_orders = [o for o in orders if o["status"] == "completed"]
+        approved_orders = [o for o in orders if o["status"] == "approved"]
+        
+        analysis = f"• Total Orders: {total_orders}\n"
+        analysis += f"• Pending Orders: {len(pending_orders)}\n"
+        analysis += f"• Approved Orders: {len(approved_orders)}\n"
+        analysis += f"• Completed Orders: {len(completed_orders)}\n"
+        
+        # Add table format for orders
+        if orders:
+            analysis += f"\nYour orders:\n"
+            analysis += "| Order ID | Role | Product | Quantity | Unit Price | Total Price | Status |\n"
+            analysis += "|----------|------|---------|----------|------------|-------------|--------|\n"
+            
+            for order in orders:
+                # Determine role based on buyer/seller
+                role = "Buyer" if order.get("buyer", "").lower() == order.get("userAddress", "").lower() else "Seller"
+                
+                order_id = order.get("id", "N/A")
+                product_name = order.get("productName", "Unknown Product")
+                quantity = order.get("quantity", 0)
+                unit_price = order.get("unitPrice", 0)
+                total_price = order.get("totalPrice", 0)
+                status = order.get("status", "unknown").title()
+                
+                analysis += f"| {order_id} | {role} | {product_name} | {quantity} units | {unit_price:.4f} ETH | {total_price:.4f} ETH | {status} |\n"
+        
+        return analysis
+
+    def get_market_analysis(self) -> str:
+        """Get market analysis summary"""
+        try:
+            market_data = self.web3_service.get_market_data()
+            contract_stats = self.web3_service.get_contract_stats()
+            
+            if not market_data or not contract_stats:
+                return "Market data unavailable."
+            
+            listings = market_data.get("activeListings", [])
+            
+            if not listings:
+                return "No active market listings found."
+            
+            # Price analysis
+            prices = [listing["pricePerUnit"] for listing in listings]
+            avg_price = sum(prices) / len(prices)
+            min_price = min(prices)
+            max_price = max(prices)
+            
+            # Product category analysis
+            product_categories = {}
+            for listing in listings:
+                product_id = listing["productId"]
+                if product_id not in product_categories:
+                    product_categories[product_id] = []
+                product_categories[product_id].append(listing)
+            
+            # Volume analysis
+            total_volume = sum(listing["quantityAvailable"] for listing in listings)
+            
+            analysis = f"""
+MARKET ANALYSIS:
+• Total Active Listings: {len(listings)}
+• Average Price: {self.format_currency(avg_price)}
+• Price Range: {self.format_currency(min_price)} - {self.format_currency(max_price)}
+• Total Available Volume: {total_volume} units
+• Product Categories: {len(product_categories)}
+
+PLATFORM STATISTICS:
+• Total Companies: {contract_stats.get('totalCompanies', 0)}
+• Total Products: {contract_stats.get('totalProducts', 0)}
+• Total Transactions: {contract_stats.get('totalTransactions', 0)}
+• Active Relationships: {contract_stats.get('totalRelationships', 0)}
+            """
+            
+            return analysis.strip()
+            
+        except Exception as e:
+            logger.error(f"Error generating market analysis: {e}")
+            return "Error retrieving market analysis data."
+
+    def get_product_analysis(self, product_id: int) -> str:
+        """Get specific product analysis"""
+        try:
+            # This would require additional contract methods to get product details
+            # For now, return a placeholder
+            return f"Product analysis for Product ID {product_id} is not yet implemented."
+        except Exception as e:
+            logger.error(f"Error getting product analysis: {e}")
+            return "Error retrieving product analysis."
+
+    def get_comparative_analysis(self, address: str) -> str:
+        """Get comparative analysis against market averages"""
+        try:
+            user_data = self.web3_service.get_comprehensive_user_data(address)
+            market_data = self.web3_service.get_market_data()
+            
+            if not user_data or not market_data:
+                return "Insufficient data for comparative analysis."
+            
+            user_analytics = user_data.get("analytics", {})
+            market_avg_price = market_data.get("avgPrice", 0)
+            
+            # Compare user's average product price to market
+            user_products = user_data.get("products", [])
+            if user_products:
+                user_avg_price = sum(p["pricePerUnit"] for p in user_products) / len(user_products)
+                price_comparison = ((user_avg_price - market_avg_price) / market_avg_price * 100) if market_avg_price > 0 else 0
+                
+                analysis = f"""
+COMPARATIVE ANALYSIS:
+• Your Average Product Price: {self.format_currency(user_avg_price)}
+• Market Average Price: {self.format_currency(market_avg_price)}
+• Price Difference: {self.format_percentage(price_comparison)} {"above" if price_comparison > 0 else "below"} market average
+• Your Product Count: {len(user_products)}
+• Your Transaction Count: {user_analytics.get('transactionCount', 0)}
+                """
+                
+                return analysis.strip()
+            
+            return "No products found for comparative analysis."
+            
+        except Exception as e:
+            logger.error(f"Error generating comparative analysis: {e}")
+            return "Error retrieving comparative analysis."
+
+    def search_products_by_query(self, query: str) -> str:
+        """Search for products based on natural language query"""
+        try:
+            # This is a simplified search - in practice, you'd implement more sophisticated matching
+            query_lower = query.lower()
+            
+            # Get market data for available products
+            market_data = self.web3_service.get_market_data()
+            listings = market_data.get("activeListings", [])
+            
+            if not listings:
+                return "No products currently available in the market."
+            
+            # Simple keyword matching (this could be enhanced with AI/ML)
+            relevant_listings = []
+            for listing in listings:
+                # You'd need to fetch product details to search by name
+                # For now, we'll return all listings
+                relevant_listings.append(listing)
+            
+            if relevant_listings:
+                result = f"Found {len(relevant_listings)} products matching your query:\n"
+                for i, listing in enumerate(relevant_listings[:5], 1):
+                    result += f"{i}. Product #{listing['productId']}: {listing['quantityAvailable']} units @ {self.format_currency(listing['pricePerUnit'])}\n"
+                return result
+            
+            return "No products found matching your query."
+            
+        except Exception as e:
+            logger.error(f"Error searching products: {e}")
+            return "Error searching products."
+
+    def generate_insights(self, address: str) -> str:
+        """Generate business insights for the user"""
+        try:
+            user_data = self.web3_service.get_comprehensive_user_data(address)
+            
+            if not user_data:
+                return "No data available for insights generation."
+            
+            analytics = user_data.get("analytics", {})
+            products = user_data.get("products", [])
+            transactions = user_data.get("transactions", [])
+            
+            insights = ["BUSINESS INSIGHTS:"]
+            
+            # Revenue insights
+            if analytics.get("totalRevenue", 0) > 0:
+                insights.append(f"• You've generated {self.format_currency(analytics['totalRevenue'])} in total revenue")
+            
+            # Product insights
+            if products:
+                high_value_products = [p for p in products if p["pricePerUnit"] > 1.0]
+                if high_value_products:
+                    insights.append(f"• You own {len(high_value_products)} high-value products (>1 ETH)")
+            
+            # Transaction insights
+            if transactions:
+                recent_activity = len([tx for tx in transactions if tx["timestamp"] > (datetime.now().timestamp() - 30*24*3600)])
+                if recent_activity > 0:
+                    insights.append(f"• You've had {recent_activity} transactions in the last 30 days")
+            
+            return "\n".join(insights)
+            
+        except Exception as e:
+            logger.error(f"Error generating insights: {e}")
+            return "Error generating business insights."
+
+    def get_market_listings_table(self) -> str:
+        """Get market listings in table format"""
+        try:
+            market_data = self.web3_service.get_market_data()
+            listings = market_data.get("activeListings", [])
+            
+            if not listings:
+                return "No products currently available in the marketplace."
+            
+            # Build table with product details
+            table_data = []
+            for listing in listings:
+                try:
+                    # Get product details
+                    product = self.web3_service.get_product_details(listing["productId"])
+                    if product:
+                        # Get seller company name
+                        seller_company = self.web3_service.get_company_info(listing["seller"])
+                        seller_name = seller_company.get("name", "Unknown") if seller_company else "Unknown"
+                        
+                        table_data.append({
+                            "product_name": product.get("name", f"Product #{listing['productId']}"),
+                            "seller": seller_name,
+                            "quantity": listing["quantityAvailable"],
+                            "price": listing["pricePerUnit"],
+                            "total_value": listing["quantityAvailable"] * listing["pricePerUnit"]
+                        })
+                except Exception as e:
+                    logger.warning(f"Error getting details for listing {listing['id']}: {e}")
+                    continue
+            
+            if not table_data:
+                return "No detailed product information available for market listings."
+            
+            # Format as table
+            result = f"**Marketplace Products ({len(table_data)} available):**\n\n"
+            result += "| Product Name | Seller | Quantity | Unit Price | Total Value |\n"
+            result += "|--------------|--------|----------|------------|-------------|\n"
+            
+            for item in table_data:
+                result += f"| {item['product_name']} | {item['seller']} | {item['quantity']} units | {self.format_currency(item['price'])} | {self.format_currency(item['total_value'])} |\n"
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error getting market listings table: {e}")
+            return "Error retrieving market listings."
+
+# Global instance
+analytics_service = AnalyticsService()
