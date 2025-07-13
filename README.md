@@ -20,7 +20,7 @@
 
 ## Problem Statement
 
-In today's global markets, product authenticity and traceability are becoming critical business differentiators — especially for industries dealing in high-value or safety-critical products like electronics, pharmaceuticals etc. However, most businesses cannot prove the full journey of their product, and trust is often broken between suppliers, buyers, and end consumers. Meanwhile, businesses struggle to scale operations efficiently, often missing optimal trade opportunities due to delayed decisions and lack of automation.
+In Today's global markets, product authenticity and traceability are becoming critical business differentiators — especially for industries dealing in high-value or safety-critical products like electronics, pharmaceuticals etc. However, most businesses cannot prove the full journey of their product, and trust is often broken between suppliers, buyers, and end consumers. Meanwhile, businesses struggle to scale operations efficiently, often missing optimal trade opportunities due to delayed decisions and lack of automation.
 
 ## Our Solution: Agentic SCM on Ethereum
 
@@ -38,13 +38,13 @@ We present a decentralized supply chain management platform powered by Ethereum 
 - This enables businesses to capitalize on the rising demand for transparent sourcing. Our platform becomes a stamp of credibility — and we monetize it by charging certified sellers who wish to showcase their supply chain through our trusted infrastructure.
 
 ### 🤖 Why AI Agents?
-- We deploy autonomous AI Buyer and Seller Agents that:
+We deploy autonomous Seller Strategy Agent that:
 
 - Monitor the network for optimal trade opportunities.
 
 - Analyze product history, price trends, and seller ratings.
 
-- Automatically place or accept orders once conditions match.
+- Automatically sells orders once conditions match.
 
 - Help businesses operate at machine-level efficiency, minimizing human delay.
 
@@ -77,7 +77,7 @@ We present a decentralized supply chain management platform powered by Ethereum 
 - **Marketplace Integration**: Spot market for immediate transactions
 
 ### AI Agent Features
-- **Autonomous Trading**: AI agents (smart buyer and seller) automatically place and accept orders
+- **Autonomous Trading**: Seller Strategy Agent helps seller to automatically sell his goods after doing market analysis.
 - **Product Analysis**: Real-time trend and price analysis
 - **Company Analysis**: AI generates detailed PDF review of the company 
 - **AI Chat**: Agents integrated RAG based models to query the blockchain thorugh NLP. 
@@ -98,7 +98,7 @@ We present a decentralized supply chain management platform powered by Ethereum 
 ![TrustFlow High-Level Design](static/MermaidChart-TrustFlow.png)
 
 ### AI Agent HLD
-![AI Agent High-Level Design](static/agent_hld.jpg)
+![Sellar AI Agent High-Level Design](static/agent_hld.jpg)
 
 ## Technology Stack
 
@@ -189,20 +189,10 @@ We present a decentralized supply chain management platform powered by Ethereum 
 
 ## 🔮 Future Roadmap
 
-### Phase 1 (Current)
-- ✅ Basic SCM functionality
-- ✅ AI agent integration
-- ✅ Order tracking system
-
-### Phase 2 (Next)
-- 🔄 Multi-chain support
-- 🔄 Advanced AI analytics
-- 🔄 Mobile app development
-
-### Phase 3 (Future)
+- 📋 Buyer and Negotiation AI Agents
+- 📋 Advanced Inventory management
 - 📋 IoT integration
-- 📋 Advanced compliance features
-- 📋 Enterprise partnerships
+- 📋 Android App support
 
 ## 👥 Team
 
