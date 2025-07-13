@@ -1,147 +1,224 @@
-# TrustFlow Backend
+# TrustFlow - Agentic Supply Chain Management on Ethereum
 
-AI-powered business analysis backend built with FastAPI, featuring autonomous sales agents, company analysis, and intelligent pricing using Google Gemini AI.
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.28-blue.svg)](https://soliditylang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org/)
+[![Hardhat](https://img.shields.io/badge/Hardhat-2.19.0-orange.svg)](https://hardhat.org/)
+
+## 📋 Table of Contents
+- [Problem Statement](#-problem-statement)
+- [Our Solution](#-our-solution)
+- [Example Use Case](#-example-use-case-verified-smart-power-bank--made-in-india)
+- [Live Demo](#-live-demo)
+- [Features](#-features)
+- [System Architecture](#-system-architecture)
+- [Technology Stack](#-technology-stack)
+- [Getting Started](#-getting-started)
+- [Future Roadmap](#-future-roadmap)
+- [Team](#-team)
+- [Acknowledgments](#-acknowledgments)
+
+
+## Problem Statement
+
+In today's global markets, product authenticity and traceability are becoming critical business differentiators — especially for industries dealing in high-value or safety-critical products like electronics, pharmaceuticals etc. However, most businesses cannot prove the full journey of their product, and trust is often broken between suppliers, buyers, and end consumers. Meanwhile, businesses struggle to scale operations efficiently, often missing optimal trade opportunities due to delayed decisions and lack of automation.
+
+## Our Solution: Agentic SCM on Ethereum
+
+We present a decentralized supply chain management platform powered by Ethereum blockchain and AI-driven agents — designed to offer trust, traceability, and automation at scale.
+
+### ✅ Why Blockchain?
+- Our platform uses Ethereum smart contracts to ensure:
+
+- Tamper-proof product journey records: Every transaction, handoff, or quality verification is immutably recorded.
+
+- Proof of Origin: Businesses using our platform receive a blockchain-certified product trail they can display to customers — boosting brand trust, just like "PETA certified" or "USDA Organic".
+
+- Transparent compliance: Buyers can validate product claims (e.g., organic, ethical sourcing) independently.
+
+- This enables businesses to capitalize on the rising demand for transparent sourcing. Our platform becomes a stamp of credibility — and we monetize it by charging certified sellers who wish to showcase their supply chain through our trusted infrastructure.
+
+### 🤖 Why AI Agents?
+- We deploy autonomous AI Buyer and Seller Agents that:
+
+- Monitor the network for optimal trade opportunities.
+
+- Analyze product history, price trends, and seller ratings.
+
+- Automatically place or accept orders once conditions match.
+
+- Help businesses operate at machine-level efficiency, minimizing human delay.
+
+- This agentic automation empowers businesses to scale faster, make informed decisions, and tap into a dynamic ecosystem of verified partners — without manual oversight.
+
+## Example Use Case: Verified Smart Power Bank – “Made in India”
+- A customer buys a 20,000mAh power bank from a retailer. It has a QR code powered by our platform.
+- The battery cells came from Panasonic India, batch ID #2231.
+- The product was manufactured in India by a government-certified SME electronics unit.
+- Each component and stage passed quality and temperature tests.
+- The full journey — from supplier to assembly to retailer — is recorded on Ethereum, tamper-proof.
+
+## 🎯 Live Demo
+
+**🌐 Demo Link**: [TrustFlow Live Demo](https://trustflow-demo.vercel.app)
+
+** Screenshots**:
+- Dashboard Overview
+- Order Tracking Interface
+- Product Traceability
+- AI Agent Interface
 
 ## Features
 
-- **Company Analysis API**: Financial data analysis with news sentiment using Yahoo Finance and NewsAPI
-- **Product Pricing Intelligence**: AI-powered pricing recommendations
-- **Autonomous Sales Agent**: Smart decision-making for bulk vs retail sales strategies
-- **Blockchain Integration**: Smart contract deployment for secure transactions
-- **RESTful API**: FastAPI with CORS support and automatic documentation
+### Blockchain Features
+- **Smart Contract Management**: Complete supply chain operations on Ethereum
+- **Product Traceability**: End-to-end product journey tracking
+- **Order Management**: QR Based Delivery tracking
+- **Relationship Management**: Supplier-buyer relationship establishment
+- **Marketplace Integration**: Spot market for immediate transactions
 
-## Folder Structure
+### AI Agent Features
+- **Autonomous Trading**: AI agents (smart buyer and seller) automatically place and accept orders
+- **Product Analysis**: Real-time trend and price analysis
+- **Company Analysis**: AI generates detailed PDF review of the company 
+- **AI Chat**: Agents integrated RAG based models to query the blockchain thorugh NLP. 
 
-```
-backend/
-├── main.py                     # FastAPI server with API endpoints
-├── company_analyzer_agent.py   # Company financial & news analysis
-├── product_pricing_agent.py    # AI-powered product pricing
-├── smart_decision_agent.py     # Autonomous sales decision engine
-├── run_agent.py               # Agent execution script
-├── requirement.txt            # Python dependencies
-└── agent_decision_feedback.jsonl  # Decision history log
-```
+### Tracking & Monitoring
+- **Real-time Order Tracking**: 6-stage delivery pipeline
+- **OriginTree™ Scan**: QR-based product history showing full component lineage and ownership hierarchy
+- **Payment Integration**: Secure payment processing via ETH or UPI
 
-## File Logic & Intent
+### Security & Trust
+- **Immutable Records**: Tamper-proof transaction history
+- **Role-based Access**: Secure permission management
+- **Audit Trail**: Complete audit trail for all operations
+- **Data Integrity**: Cryptographic verification of all data
 
-### `main.py`
-- **Purpose**: FastAPI application server
-- **Logic**: Provides REST endpoints for company analysis and product pricing
-- **Key Endpoints**:
-  - `POST /analyze-company`: Company financial and news analysis
-  - `POST /predict-price`: Product pricing recommendations
-  - `GET /docs`: Interactive API documentation
+## System Architecture
 
-### `company_analyzer_agent.py`
-- **Purpose**: Comprehensive company analysis using multiple data sources
-- **Logic**: 
-  - Uses Gemini AI to extract stock ticker from company name
-  - Fetches financial data via Yahoo Finance (yfinance)
-  - Retrieves recent news articles via NewsAPI
-  - Performs sentiment analysis using VADER
-  - Generates detailed company reports with AI insights
-- **Key Features**: Financial metrics, news sentiment, competitive analysis
+![TrustFlow High-Level Design](static/MermaidChart-TrustFlow.png)
 
-### `product_pricing_agent.py`
-- **Purpose**: AI-driven product pricing analysis
-- **Logic**:
-  - Uses Gemini AI to analyze market conditions
-  - Considers competition, features, target audience, and costs
-  - Returns price ranges with detailed reasoning
-  - Provides JSON-formatted pricing recommendations
+### AI Agent HLD
+![AI Agent High-Level Design](static/agent_hld.jpg)
 
-### `smart_decision_agent.py`
-- **Purpose**: Autonomous sales agent with AI decision-making
-- **Logic**:
-  - Analyzes market conditions using Gemini AI
-  - Makes decisions between retail, bulk, or hold strategies
-  - Generates AI-optimized contracts for bulk buyers
-  - Manages buyer database with credit scoring
-  - Integrates with blockchain for transaction security
-  - Logs decisions for learning and improvement
-- **Key Components**:
-  - Market analysis engine
-  - Buyer matching system
-  - Contract generation
-  - Blockchain interface
-  - Email service integration
+## Technology Stack
 
-### `run_agent.py`
-- **Purpose**: Standalone script to test the autonomous sales agent
-- **Logic**: Simulates product creation and triggers agent decision-making process
+### Frontend
+- **Next.js 14**: React framework with App Router
+- **TypeScript**: Type-safe development
+- **Tailwind CSS**: Utility-first CSS framework
+- **Web3.js**: Ethereum blockchain integration
+- **MetaMask**: Wallet connection
 
-## Setup Instructions
+### Blockchain
+- **Solidity 0.8.28**: Smart contract development
+- **Hardhat**: Development environment
+- **Ethereum**: Blockchain network
+
+### AI/Backend
+- **Gemini**: LLM for AI suggestions
+- **Python**: Backend API development
+- **FastAPI**: REST API framework
+
+## Getting Started
 
 ### Prerequisites
+- Node.js 18+ 
 - Python 3.8+
-- Google API Key (for Gemini AI)
-- NewsAPI Key (optional, for company news analysis)
+- MetaMask browser extension
+- Git
 
-### Installation
+### Quick Start
 
-1. **Create Virtual Environment**
-```bash
-cd backend
-python -m venv myenv
-source myenv/bin/activate  # On Windows: myenv\Scripts\activate
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/trustflow.git
+   cd trustflow
+   ```
 
-2. **Install Dependencies**
-```bash
-pip install -r requirement.txt
-```
+2. **Blockchain Setup**
+   ```bash
+   cd blockchain
+   npm install
+   npx hardhat node
+   ```
 
-3. **Set Environment Variables**
-```bash
-export GOOGLE_API_KEY="your_google_gemini_api_key"
-export NEWS_API_KEY="your_news_api_key"  # Optional
-```
+3. **Deploy Smart Contract**
+   ```bash
+   npx hardhat run scripts/deploy.js --network localhost
+   ```
 
-4. **Run FastAPI Server**
-```bash
-python main.py
-# Server runs on http://localhost:8000
-# API docs available at http://localhost:8000/docs
-```
+4. **Frontend Setup**
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
 
-### Testing the Autonomous Agent
-```bash
-python run_agent.py
-# Simulates product creation and autonomous decision-making
-```
+5. **AI Backend Setup**
+   ```bash
+   # Install Ollama
+   curl -fsSL https://ollama.com/install.sh | sh
+   
+   # Pull Mistral model
+   ollama pull mistral:7b
+   
+   # Start Python backend
+   cd backend
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   python3 app.py
+   ```
 
-## Key Technologies
+### Configuration
 
-- **AI/ML**: Google Gemini AI for analysis and decision-making
-- **Data Sources**: Yahoo Finance (yfinance), NewsAPI, VADER sentiment analysis
-- **Web Framework**: FastAPI with Pydantic models
-- **Blockchain**: Web3.py for Ethereum integration
-- **Email**: SMTP integration for contract delivery
-- **Data Storage**: JSON-based logging and buyer database
+1. **MetaMask Network Setup**:
+   - Network Name: `localhost`
+   - RPC URL: `http://127.0.0.1:8545/`
+   - Chain ID: `31337`
+   - Currency Symbol: `ETH`
 
-## API Usage Examples
+2. **Contract Address**:
+   - Update `frontend/lib/contract.ts` with deployed contract address
 
-### Company Analysis
-```bash
-curl -X POST "http://localhost:8000/analyze-company" \
-  -H "Content-Type: application/json" \
-  -d '{"company_name": "Apple Inc"}'
-```
+3. **Environment Variables**:
+   ```env
+   NEXT_PUBLIC_CONTRACT_ADDRESS=your_contract_address
+   NEXT_PUBLIC_NETWORK_ID=31337
+   ```
 
-### Product Pricing
-```bash
-curl -X POST "http://localhost:8000/predict-price" \
-  -H "Content-Type: application/json" \
-  -d '{"product_name": "Wireless Headphones", "description": "Bluetooth 5.0, noise cancelling"}'
-```
+## 🔮 Future Roadmap
 
-## Business Logic
+### Phase 1 (Current)
+- ✅ Basic SCM functionality
+- ✅ AI agent integration
+- ✅ Order tracking system
 
-The backend operates through intelligent agents that:
+### Phase 2 (Next)
+- 🔄 Multi-chain support
+- 🔄 Advanced AI analytics
+- 🔄 Mobile app development
 
-1. **Analyze companies** using real-time financial data and news sentiment
-2. **Generate pricing strategies** based on AI market analysis
-3. **Make autonomous sales decisions** between bulk and retail strategies
-4. **Create optimized contracts** using AI-generated terms
-5. **Match products with buyers** using creditworthiness analysis
+### Phase 3 (Future)
+- 📋 IoT integration
+- 📋 Advanced compliance features
+- 📋 Enterprise partnerships
+
+## 👥 Team
+
+- **Sagar Athani**
+- **Praveen kumar**
+- **Adya N A**
+- **Abhay Singh Rajput**
+
+## 🙏 Acknowledgments
+
+- Agentic Ethereum India #AgenticHack
+
+
+<div align="center">
+  <p>Made with ❤️ for the Agentic Ethereum Hackathon India</p>
+</div>
+
+
+
