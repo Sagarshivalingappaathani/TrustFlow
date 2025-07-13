@@ -95,7 +95,7 @@ We deploy autonomous Seller Strategy Agent that:
 
 ## System Architecture
 
-![TrustFlow High-Level Design](static/MermaidChart-TrustFlow.png)
+![TrustFlow High-Level Design](static/TrustFlow.png)
 
 ### AI Agent HLD
 ![Sellar AI Agent High-Level Design](static/agent_hld.jpg)
