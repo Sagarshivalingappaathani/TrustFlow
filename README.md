@@ -199,14 +199,5 @@ We deploy autonomous Seller Strategy Agent that:
 - **Adya N A**
 - **Abhay Singh Rajput**
 
-## 🙏 Acknowledgments
-
-- Agentic Ethereum India #AgenticHack
-
-
-<div align="center">
-  <p>Made with ❤️ for the Agentic Ethereum Hackathon India</p>
-</div>
-
 
 
