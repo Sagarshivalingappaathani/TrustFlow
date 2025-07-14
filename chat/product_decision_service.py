@@ -393,7 +393,6 @@ class ProductDecisionService:
 product_decision_service = None
 
 def get_product_decision_service(gemini_api_key: str) -> ProductDecisionService:
-    """Get or create product decision service instance"""
     global product_decision_service
     if product_decision_service is None:
         product_decision_service = ProductDecisionService(gemini_api_key)
