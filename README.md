@@ -57,15 +57,13 @@ We deploy autonomous Seller Strategy Agent that:
 - Each component and stage passed quality and temperature tests.
 - The full journey — from supplier to assembly to retailer — is recorded on Ethereum, tamper-proof.
 
-## 🎯 Live Demo
+##  Screenshots
 
-**🌐 Demo Link**: [TrustFlow Live Demo](https://trustflow-demo.vercel.app)
-
-** Screenshots**:
-- Dashboard Overview
-- Order Tracking Interface
-- Product Traceability
-- AI Agent Interface
+![Homepage](static/homepage.jpg)
+![Dashboard](static/dashboard.jpg)
+![Product](static/product.jpg)
+![Relationship](static/relationship.jpg)
+![Marketplace](static/marketplace.jpg)
 
 ## Features
 
