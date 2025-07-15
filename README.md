@@ -58,6 +58,8 @@ We deploy autonomous Seller Strategy Agent that:
 - The full journey — from supplier to assembly to retailer — is recorded on Ethereum, tamper-proof.
 
 ##  Screenshots
+### demo video
+https://youtu.be/PganpPv28KU?feature=shared
 
 ![Homepage](static/homepage.jpg)
 ![Dashboard](static/dashboard.jpg)
